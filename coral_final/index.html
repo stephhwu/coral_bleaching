@@ -102,6 +102,23 @@
         <p class="disclaimer">*Map not to scale</p>
       </div>
     </div>
+    <!-- Add this right before the closing </body> tag -->
+    <div id="coral-modal" class="coral-modal">
+      <div class="modal-content">
+        <button id="modal-close-btn" class="modal-close-btn">&larr; Back to Map</button>
+        <div class="modal-inner-content">
+          <div class="modal-region"></div>
+          <div class="modal-image-container">
+            <img class="modal-image" src="" alt="Coral Image">
+          </div>
+          <div class="modal-coral-info">
+            <div class="modal-coral-name"></div>
+            <div class="modal-coral-description"></div>
+            <div class="coral-image-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="script.js"></script>
   </body>

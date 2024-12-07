@@ -101,14 +101,7 @@ a {
   position: relative;
 }
 
-.img {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  position: absolute;
-  margin: 20px;
-  cursor: pointer;
-}
+
 
 .img img {
   width: 100%;
@@ -154,8 +147,17 @@ a {
 }
 
 
+.img {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  position: absolute;
+  margin: 20px;
+  cursor: pointer;
+}
+
 .img:hover {
-  outline: 1px solid black;
+  outline: 0.5px solid black;
   z-index: 10;
 }
 
@@ -172,6 +174,8 @@ a {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  top: 100%; /* Position below the image */
+  left: 0; /* Align left with the image */
 }
 
 .tooltip .coral-name {
@@ -186,4 +190,143 @@ a {
   font-size: 12px;
   font-weight: 300;
   line-height: 1.4;
+}
+
+/*modal css*/
+
+.coral-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 1000;
+  display: none;
+  overflow: hidden;
+}
+
+.modal-content {
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  background: none;
+  border: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.modal-close-btn:hover {
+  opacity: 0.4;
+}
+
+.modal-inner-content {
+  display: flex;
+  height: 100%;
+  align-items: flex-start;
+}
+
+.modal-region {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 24px;
+  letter-spacing: 1.2px;
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.modal-image-container {
+  position: absolute;
+  top: 18%;
+  left: 6.6%;
+  width: 704px;
+  height: 704px;
+}
+
+.modal-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-coral-info {
+  position: absolute;
+  top: 18%;
+  left: calc(6.6% + 704px + 40px);
+}
+
+.modal-coral-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  color: #464646;
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.modal-coral-description {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 18px;
+  max-width: 500px;
+  line-height: normal;
+}
+
+.modal-region {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 24px;
+  opacity: 0.4;
+  letter-spacing: 14.4px;
+  position: absolute;
+  top: 11%;
+  left: 18%;
+}
+
+.coral-image-chart {
+  margin-top: 20px;
+}
+
+.coral-image-chart .year-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.coral-image-chart .year-row .year-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.coral-image-chart .coral-image-small {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 5px;
+}
+
+.modal-coral-prevalence {
+  color: #2C2627;
+  font-family: "Cormorant Garamond";
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 10px;
 }

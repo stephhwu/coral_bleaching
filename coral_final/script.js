@@ -233,25 +233,25 @@ const dataByRegion = {
       
       
       const positions = [
-        { top: "63.9%", left: "71.2%" },//fungia
-        { top: "54.9%", left: "19%" },//stylophora
-        { top: "8.6%", left: "64%" },//cyphastrea
-        { top: "0%", left: "60%" },//montipora
-        { top: "10.2%", left: "4.7%" }, //turbinaria 
-        { top: "22.5%", left: "49%" },//pocillopora
-        { top: "54.9%", left: "75.94%" },//leptoseris
-        { top: "55%", left: "56.3%" },//isopora
-        { top: "64%", left: "42.7%" },//caulastrea
-        { top: "89%", left: "19.5%" },//astreopora
-        { top: "24.2%", left: "19%" },//stylophora
-        { top: "36.7%", left: "93.4%" },//montipora
-        { top: "64%", left: "47.4%" },//monastraea
-        { top: "81.9%", left: "71.1%" },//coeloseris
-        { top: "27.8%", left: "88.5%" },//pocillopora
-        { top: "64%", left: "4.9%" },//turbinaria
-        { top: "19.4%", left: "9.8%" }, //plesiastrea
-        { top: "82.2%", left: "24.6%" },//montipora
-        { top: "14%", left: "53%" }, //fungia
+        { top: "63.9%", left: "71.2%" },//fungia main hawaiian islands
+        { top: "54.9%", left: "19%" },//stylophora guam
+        { top: "8.6%", left: "64%" },//cyphastrea northwest hawaiian
+        { top: "0%", left: "60%" },//montipora northwest hawaiian
+        { top: "10.2%", left: "4.7%" }, //turbinaria  mariana
+        { top: "22.5%", left: "49%" },//pocillopora northwest hawaiian
+        { top: "54.9%", left: "75.94%" },//leptoseris hawaii
+        { top: "55%", left: "56.3%" },//isopora samoa
+        { top: "64%", left: "42.7%" },//caulastrea samoa
+        { top: "89%", left: "19.5%" },//astreoporaguam
+        { top: "24.2%", left: "19%" },//stylophora mariana
+        { top: "36.7%", left: "93.4%" },//montipora hawaii
+        { top: "64%", left: "47.4%" },//monastraea samoa
+        { top: "81.9%", left: "71.1%" },//coeloseris samoa
+        { top: "27.8%", left: "88.5%" },//pocillopora hawaii
+        { top: "64%", left: "4.9%" },//turbinaria guam
+        { top: "19.4%", left: "9.8%" }, //plesiastrea mariana
+        { top: "82.2%", left: "24.6%" },//montipora guam
+        { top: "14%", left: "53%" }, //fungia northwest mariana
       ];
 
       const imgs = document.querySelectorAll(".img");
@@ -316,8 +316,143 @@ const dataByRegion = {
           transform: "none",
           width: "75px",
           height: "75px",
+          opacity: 0.1,
           stagger: 0.075,
           duration: 0.75,
           ease: "power2.out",
+          onComplete: () => {
+            // Fade in overlay text
+            gsap.to(".overlay-text .main-title", {
+              opacity: 1,
+              duration: 0.5,
+              ease: "power2.out"
+            });
+            gsap.to(".overlay-text .subtitle", {
+              opacity: 1,
+              duration: 0.5,
+              delay: 0.2,
+              ease: "power2.out"
+            });
+            gsap.to(".overlay-text .disclaimer", {
+              opacity: 1,
+              duration: 0.5,
+              delay: 0.4,
+              ease: "power2.out"
+            });
+      
+            // Make the entire screen clickable
+            document.body.style.cursor = "pointer"; // Indicate interactivity
+            document.body.addEventListener("click", handleClick);
+      
+            function handleClick() {
+              // Reset image and fade out overlay text
+              gsap.to(".img", {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+              });
+              gsap.to(".overlay-text .main-title, .overlay-text .subtitle, .overlay-text .disclaimer", {
+                opacity: 0,
+                duration: 0.5,
+                ease: "power2.out"
+              });
+      
+              // Remove click event listener to prevent multiple triggers
+              document.body.style.cursor = "default"; // Reset cursor
+              document.body.removeEventListener("click", handleClick);
+            }
+          }
         });
       }
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const imgs = document.querySelectorAll('.img');
+        
+        imgs.forEach((img, index) => {
+          const tooltip = document.createElement('div');
+          tooltip.classList.add('tooltip');
+          img.appendChild(tooltip);
+          
+          // Get coral name from image source
+          const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
+          
+          // Get region from data attribute
+          const region = img.dataset.region;
+          
+          // Find matching data for this specific coral and region
+          let matchingData = null;
+          if (dataByRegion[region]) {
+            Object.keys(dataByRegion[region].data).forEach(year => {
+              const bleachingData = dataByRegion[region].data[year].bleaching;
+              const coralMatch = bleachingData.find(coral => 
+                coral.group.toLowerCase() === coralName.toLowerCase()
+              );
+              
+              if (coralMatch) {
+                // Take the most recent year's data
+                if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
+                  matchingData = {
+                    region: region,
+                    year: year,
+                    prevalence: coralMatch.prevalence,
+                    group: coralMatch.group
+                  };
+                }
+              }
+            });
+          }
+          
+          // Set tooltip content
+          if (matchingData) {
+            tooltip.innerHTML = `
+              <div class="coral-name">${matchingData.group} (${matchingData.region})</div>
+              <div class="coral-details">${matchingData.prevalence.toFixed(1)}% Bleaching (${matchingData.year})</div>
+            `;
+          } else {
+            tooltip.innerHTML = `
+              <div class="coral-name">No data available</div>
+            `;
+          }
+          
+          // Hover effects
+          img.addEventListener('mouseenter', (e) => {
+            // Add black outline
+            img.style.outline = '3px solid black';
+            
+            // Show tooltip
+            tooltip.style.opacity = '1';
+            tooltip.style.top = '100%';
+            tooltip.style.left = '0';
+            
+            // Dim other images
+            imgs.forEach(otherImg => {
+              if (otherImg !== img) {
+                otherImg.style.opacity = '0.1';
+              }
+            });
+            
+            // Highlight similar corals
+            imgs.forEach(otherImg => {
+              const otherCoralName = otherImg.querySelector('img').src.split('/').pop().split('.')[0];
+              if (otherCoralName.toLowerCase() === coralName.toLowerCase()) {
+                otherImg.style.outline = '3px solid black';
+                otherImg.style.opacity = '1';
+              }
+            });
+          });
+          
+          img.addEventListener('mouseleave', () => {
+            // Remove black outline
+            img.style.outline = 'none';
+            
+            // Hide tooltip
+            tooltip.style.opacity = '0';
+            
+            // Restore other images
+            imgs.forEach(otherImg => {
+              otherImg.style.opacity = '1';
+              otherImg.style.outline = 'none';
+            });
+          });
+        });
+      });

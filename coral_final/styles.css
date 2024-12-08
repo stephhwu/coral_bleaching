@@ -231,7 +231,7 @@ a {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 24px;
+  font-size: 16px;
   letter-spacing: 14.4px;
   position: absolute;
   top: 40px;
@@ -257,7 +257,7 @@ a {
 .modal-coral-info {
   position: absolute;
   top: 18%;
-  left: calc(6.6% + 704px + 40px);
+  left: calc(6.6% + 704px + 60px);
 }
 
 .modal-coral-name {

@@ -35,7 +35,6 @@ a {
   opacity: 0.5;
 }
 
-
 .footer {
   width: 100%;
   position: absolute;
@@ -53,7 +52,6 @@ a {
   transform: translateY(-50%);
   display: flex;
   justify-content: space-around;
-  
 }
 
 .text {
@@ -62,7 +60,6 @@ a {
   height: max-content;
   padding: 10px;
 }
-
 
 .header .text p:nth-child(1),
 .header .text p:nth-child(2) {
@@ -100,8 +97,6 @@ a {
   height: calc(100vh - 60px);
   position: relative;
 }
-
-
 
 .img img {
   width: 100%;
@@ -146,7 +141,6 @@ a {
   margin-top: 5px;
 }
 
-
 .img {
   width: 100px;
   height: 100px;
@@ -174,8 +168,8 @@ a {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
-  top: 100%; /* Position below the image */
-  left: 0; /* Align left with the image */
+  top: 100%;
+  left: 0;
 }
 
 .tooltip .coral-name {
@@ -191,8 +185,6 @@ a {
   font-weight: 300;
   line-height: 1.4;
 }
-
-/*modal css*/
 
 .coral-modal {
   position: fixed;
@@ -329,4 +321,24 @@ a {
   font-weight: 700;
   line-height: normal;
   margin-bottom: 10px;
+}
+
+/* Remove or modify these general hover styles */
+.img:hover {
+  outline: none; /* Remove the default hover outline */
+  z-index: auto; /* Remove the default hover z-index */
+}
+
+.img:hover .tooltip {
+  opacity: 0; /* Keep tooltip hidden by default */
+}
+
+/* Only enable hover effects when the hover-enabled class is present */
+.img.hover-enabled:hover {
+  outline: 2px solid black;
+  z-index: 10;
+}
+
+.img.hover-enabled .tooltip {
+  opacity: 1;
 }

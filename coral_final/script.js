@@ -307,6 +307,65 @@ const dataByRegion = {
         delay: 4,
       });
 
+      // function scatterAndShrink() {
+      //   gsap.to(".img", {
+      //     top: (i) => positions[i].top,
+      //     left: (i) => positions[i].left,
+      //     transform: "none",
+      //     width: "75px",
+      //     height: "75px",
+      //     opacity: 0.1,
+      //     stagger: 0.075,
+      //     duration: 0.75,
+      //     ease: "power2.out",
+      //     onComplete: () => {
+      //       // Fade in overlay text
+      //       gsap.to(".overlay-text .main-title", {
+      //         opacity: 1,
+      //         duration: 0.5,
+      //         ease: "power2.out"
+      //       });
+      //       gsap.to(".overlay-text .subtitle", {
+      //         opacity: 1,
+      //         duration: 0.5,
+      //         delay: 0.2,
+      //         ease: "power2.out"
+      //       });
+      //       gsap.to(".overlay-text .disclaimer", {
+      //         opacity: 1,
+      //         duration: 0.5,
+      //         delay: 0.4,
+      //         ease: "power2.out"
+      //       });
+      
+      //       // Make the entire screen clickable
+      //       document.body.style.cursor = "pointer"; // Indicate interactivity
+      //       document.body.addEventListener("click", handleClick);
+      
+      //       function handleClick() {
+      //         // Reset image and fade out overlay text
+      //         gsap.to(".img", {
+      //           opacity: 1,
+      //           duration: 0.5,
+      //           ease: "power2.out"
+      //         });
+      //         gsap.to(".overlay-text .main-title, .overlay-text .subtitle, .overlay-text .disclaimer", {
+      //           opacity: 0,
+      //           duration: 0.5,
+      //           ease: "power2.out"
+      //         });
+      
+      //         // Remove click event listener to prevent multiple triggers
+      //         document.body.style.cursor = "default"; // Reset cursor
+      //         document.body.removeEventListener("click", handleClick);
+
+      //         document.querySelectorAll(".img").forEach(img => {
+      //           img.classList.add("hover-enabled");
+      //         });
+      //       }
+      //     }
+      //   });
+      // }
       function scatterAndShrink() {
         gsap.to(".img", {
           top: (i) => positions[i].top,
@@ -339,11 +398,11 @@ const dataByRegion = {
             });
       
             // Make the entire screen clickable
-            document.body.style.cursor = "pointer"; // Indicate interactivity
+            document.body.style.cursor = "pointer";
             document.body.addEventListener("click", handleClick);
       
             function handleClick() {
-              // Reset image and fade out overlay text
+              // Reset image opacity and fade out overlay text
               gsap.to(".img", {
                 opacity: 1,
                 duration: 0.5,
@@ -355,8 +414,13 @@ const dataByRegion = {
                 ease: "power2.out"
               });
       
-              // Remove click event listener to prevent multiple triggers
-              document.body.style.cursor = "default"; // Reset cursor
+              // Add hover-enabled class to all images
+              document.querySelectorAll(".img").forEach(img => {
+                img.classList.add("hover-enabled");
+              });
+      
+              // Reset cursor and remove click listener
+              document.body.style.cursor = "default";
               document.body.removeEventListener("click", handleClick);
             }
           }
@@ -414,8 +478,9 @@ const dataByRegion = {
           
           // Hover effects
           img.addEventListener('mouseenter', (e) => {
+            if (!img.classList.contains('hover-enabled')) return;
             // Add black outline
-            img.style.outline = '3px solid black';
+            img.style.outline = '2px solid black';
             
             // Show tooltip
             tooltip.style.opacity = '1';
@@ -440,6 +505,7 @@ const dataByRegion = {
           });
           
           img.addEventListener('mouseleave', () => {
+            if (!img.classList.contains('hover-enabled')) return;
             // Remove black outline
             img.style.outline = 'none';
             

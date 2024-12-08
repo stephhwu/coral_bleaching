@@ -342,53 +342,28 @@ const dataByRegion = {
             document.body.style.cursor = "pointer";
             document.body.addEventListener("click", handleClick);
       
-// Add this to your existing script.js file
-function addNavigationButtons() {
-  const buttonsContainer = document.createElement('div');
-  buttonsContainer.className = 'buttons-container';
-
-  const aboutButton = createButton('about.html', 'About Coral Bleaching');
-  const scientistsButton = createButton('smithsonian.html', 'How Smithsonian Scientists Help');
-
-  buttonsContainer.appendChild(aboutButton);
-  buttonsContainer.appendChild(scientistsButton);
-
-  document.body.appendChild(buttonsContainer);
-}
-function createButton(href, text) {
-  const button = document.createElement('a');
-  button.href = href;
-  button.textContent = text;
-  button.className = 'nav-button';
-  return button;
-}
-
-// Modify the existing handleClick function to call addNavigationButtons
-function handleClick() {
-  // Reset image opacity and fade out overlay text
-  gsap.to(".img", {
-    opacity: 1,
-    duration: 0.5,
-    ease: "power2.out"
-  });
-  gsap.to(".overlay-text .main-title, .overlay-text .subtitle, .overlay-text .disclaimer", {
-    opacity: 0,
-    duration: 0.5,
-    ease: "power2.out"
-  });
-
-  // Add hover-enabled class to all images
-  document.querySelectorAll(".img").forEach(img => {
-    img.classList.add("hover-enabled");
-  });
-
-  // Reset cursor and remove click listener
-  document.body.style.cursor = "default";
-  document.body.removeEventListener("click", handleClick);
-
-  // Add the navigation buttons
-  addNavigationButtons();
-}
+            function handleClick() {
+              // Reset image opacity and fade out overlay text
+              gsap.to(".img", {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+              });
+              gsap.to(".overlay-text .main-title, .overlay-text .subtitle, .overlay-text .disclaimer", {
+                opacity: 0,
+                duration: 0.5,
+                ease: "power2.out"
+              });
+      
+              // Add hover-enabled class to all images
+              document.querySelectorAll(".img").forEach(img => {
+                img.classList.add("hover-enabled");
+              });
+      
+              // Reset cursor and remove click listener
+              document.body.style.cursor = "default";
+              document.body.removeEventListener("click", handleClick);
+            }
           }
         });
       }

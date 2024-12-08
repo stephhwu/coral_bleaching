@@ -362,5 +362,11 @@ a {
   align-items: center;
   text-decoration: none;
   border: 1px solid #3C3C3C;
-  border-radius: 4px;
+  border-radius: 50px;
+  
+}
+
+.nav-button:hover {
+  background-color: #D9D9D9;
+  color: #3C3C3C; /* Keep text color the same on hover */
 }

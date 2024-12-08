@@ -359,6 +359,9 @@ const dataByRegion = {
               document.querySelectorAll(".img").forEach(img => {
                 img.classList.add("hover-enabled");
               });
+
+              document.querySelector(".buttons-container").classList.remove("buttons-hidden");
+
       
               // Reset cursor and remove click listener
               document.body.style.cursor = "default";
@@ -367,3 +370,5 @@ const dataByRegion = {
           }
         });
       }
+
+      

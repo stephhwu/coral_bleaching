@@ -104,8 +104,13 @@
       </div>
     </div>
     
-    <!-- Add this right before the closing body tag -->
+    <div class="buttons-container buttons-hidden">
+      <a href="#" id="about-btn" class="nav-button">About Coral Bleaching</a>
+      <a href="#" id="smithsoniant-btn" class="nav-button">How Smithsonian Scientists Help</a>
 
+    </div>
+
+    
 
     <div id="coral-modal" class="coral-modal">
       <div class="modal-content">
@@ -123,6 +128,32 @@
         </div>
       </div>
     </div>
+
+    <div id="about-modal" class="coral-modal">
+      <div class="modal-content">
+        <button id="about-modal-close-btn" class="modal-close-btn">&larr; Back to Map</button>
+        <div class="modal-inner-content">
+          <div class="modal-coral-info">
+            <p class="modal-about-text">
+              Coral bleaching is a devastating phenomenon where corals expel their symbiotic algae (zooxanthellae) due to environmental stress, primarily caused by rising ocean temperatures. When water becomes too warm, corals become stressed and lose their vibrant colors, turning white or "bleached". This process can lead to coral death if the stress continues, threatening entire marine ecosystems and the biodiversity they support.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="smithsonian-modal" class="coral-modal">
+      <div class="modal-content">
+        <button id="smithsonian-modal-close-btn" class="modal-close-btn">&larr; Back to Map</button>
+            <p class="modal-about-text">
+              Coral bleaching is a devastating phenomenon where corals expel their symbiotic algae (zooxanthellae) due to environmental stress, primarily caused by rising ocean temperatures. When water becomes too warm, corals become stressed and lose their vibrant colors, turning white or "bleached". This process can lead to coral death if the stress continues, threatening entire marine ecosystems and the biodiversity they support.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="script.js"></script>
     <script src="modal.js"></script>

@@ -234,3 +234,27 @@ img.addEventListener('click', () => {
 // Add event listener to close button
 modalCloseBtn.addEventListener('click', closeModal);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const aboutModal = document.getElementById('about-modal');
+  const aboutBtn = document.getElementById('about-btn');
+  const aboutModalCloseBtn = document.getElementById('about-modal-close-btn');
+
+  // Function to open the about modal
+  function openAboutModal() {
+    aboutModal.style.display = 'block';
+  }
+
+  // Function to close the about modal
+  function closeAboutModal() {
+    aboutModal.style.display = 'none';
+  }
+
+  // Add event listeners
+  aboutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    openAboutModal();
+  });
+
+  aboutModalCloseBtn.addEventListener('click', closeAboutModal);
+});

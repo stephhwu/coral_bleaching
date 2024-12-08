@@ -342,3 +342,25 @@ a {
 .img.hover-enabled .tooltip {
   opacity: 1;
 }
+.buttons-container {
+  position: fixed;
+  top: 5%;
+  right: 2%;
+  display: flex;
+  gap: 20px;
+  z-index: 100;
+}
+
+.nav-button {
+  color: #3C3C3C;
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  display: inline-flex;
+  padding: 10px 20px;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  border: 1px solid #3C3C3C;
+  border-radius: 4px;
+}

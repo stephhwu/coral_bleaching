@@ -148,75 +148,170 @@ return region.replace(/-/g, ' ').toUpperCase();
 }
 
 // Function to open the modal
+// function openModal(img) {
+// const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
+// const region = img.dataset.region;
+// let matchingData = null;
+
+// if (dataByRegion[region]) {
+//   Object.keys(dataByRegion[region].data).forEach(year => {
+//     const bleachingData = dataByRegion[region].data[year].bleaching;
+//     const coralMatch = bleachingData.find(coral => coral.group.toLowerCase() === coralName.toLowerCase());
+//     if (coralMatch) {
+//       if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
+//         matchingData = { region: region, year: year, prevalence: coralMatch.prevalence, group: coralMatch.group };
+//       }
+//     }
+//   });
+// }
+
+// modalRegion.textContent = formatRegionName(matchingData.region);
+// modalImage.src = img.querySelector('img').src;
+// modalCoralName.textContent = matchingData.group;
+// modalCoralDescription.textContent = coralDescriptions[matchingData.group];
+
+// // Clear existing coral images chart
+// coralImageChart.innerHTML = '';
+
+// // Generate coral images chart
+// if (dataByRegion[region]) {
+//   Object.keys(dataByRegion[region].data).forEach(year => {
+//     const bleachingData = dataByRegion[region].data[year].bleaching;
+//     const sortedCorals = bleachingData.sort((a, b) => a.prevalence - b.prevalence);
+
+//     const yearRow = document.createElement('div');
+//     yearRow.classList.add('year-row');
+
+//     const yearLabel = document.createElement('div');
+//     yearLabel.classList.add('year-label');
+//     yearLabel.textContent = year;
+//     yearRow.appendChild(yearLabel);
+
+//     sortedCorals.forEach(coral => {
+//       const coralImageSmall = document.createElement('img');
+//       coralImageSmall.classList.add('coral-image-small');
+//       coralImageSmall.src = `./images/${coral.group.toLowerCase()}.jpg`;
+//       coralImageSmall.dataset.coralGroup = coral.group;
+//       coralImageSmall.dataset.region = region;
+//       coralImageSmall.dataset.year = year;
+//       coralImageSmall.dataset.prevalence = coral.prevalence;
+
+//       // Add event listener to small coral image
+//       coralImageSmall.addEventListener('click', (e) => {
+//         const clickedCoral = e.target;
+//         const coralName = clickedCoral.dataset.coralGroup;
+//         const region = clickedCoral.dataset.region;
+//         const year = clickedCoral.dataset.year;
+//         const prevalence = clickedCoral.dataset.prevalence;
+
+//         modalImage.src = `./images/${coralName.toLowerCase()}.jpg`;
+//         modalCoralName.textContent = coralName;
+//         modalCoralDescription.textContent = coralDescriptions[coralName] || `No description available for ${coralName}`;
+//       });
+
+//       yearRow.appendChild(coralImageSmall);
+//     });
+
+//     coralImageChart.appendChild(yearRow);
+//   });
+// }
+
+// modal.style.display = 'block';
+// }
 function openModal(img) {
-const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
-const region = img.dataset.region;
-let matchingData = null;
+  const coralName = img.querySelector('img').src.split('/').pop().split('.')[0]; // Extract coral name
+  const region = img.dataset.region; // Extract region
+  let matchingData = null;
 
-if (dataByRegion[region]) {
-  Object.keys(dataByRegion[region].data).forEach(year => {
-    const bleachingData = dataByRegion[region].data[year].bleaching;
-    const coralMatch = bleachingData.find(coral => coral.group.toLowerCase() === coralName.toLowerCase());
-    if (coralMatch) {
-      if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
-        matchingData = { region: region, year: year, prevalence: coralMatch.prevalence, group: coralMatch.group };
+  // Find matching data for the coral and region
+  if (dataByRegion[region]) {
+    Object.keys(dataByRegion[region].data).forEach((year) => {
+      const bleachingData = dataByRegion[region].data[year].bleaching;
+      const coralMatch = bleachingData.find(
+        (coral) => coral.group.toLowerCase() === coralName.toLowerCase()
+      );
+      if (coralMatch) {
+        if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
+          matchingData = {
+            region: region,
+            year: year,
+            prevalence: coralMatch.prevalence,
+            group: coralMatch.group,
+          };
+        }
       }
-    }
-  });
-}
+    });
+  }
 
-modalRegion.textContent = formatRegionName(matchingData.region);
-modalImage.src = img.querySelector('img').src;
-modalCoralName.textContent = matchingData.group;
-modalCoralDescription.textContent = coralDescriptions[matchingData.group];
+  // Update modal text fields
+  modalRegion.textContent = formatRegionName(matchingData.region);
+  modalCoralName.textContent = matchingData.group;
+  modalCoralDescription.textContent =
+    coralDescriptions[matchingData.group] ||
+    `No description available for ${matchingData.group}`;
 
-// Clear existing coral images chart
-coralImageChart.innerHTML = '';
+  // ** Set Before and After Images for Slider ** //
+  document.querySelector(
+    '.before-image'
+  ).style.backgroundImage = `url('./colored-coral/${coralName}.jpg')`; // Before image (colored coral)
+  document.querySelector(
+    '.after-image'
+  ).style.backgroundImage = `url('./images/${coralName}.jpg')`; // After image (bleached coral)
 
-// Generate coral images chart
-if (dataByRegion[region]) {
-  Object.keys(dataByRegion[region].data).forEach(year => {
-    const bleachingData = dataByRegion[region].data[year].bleaching;
-    const sortedCorals = bleachingData.sort((a, b) => a.prevalence - b.prevalence);
+  // Clear and generate coral images chart
+  coralImageChart.innerHTML = '';
 
-    const yearRow = document.createElement('div');
-    yearRow.classList.add('year-row');
+  if (dataByRegion[region]) {
+    Object.keys(dataByRegion[region].data).forEach((year) => {
+      const bleachingData = dataByRegion[region].data[year].bleaching;
+      const sortedCorals = bleachingData.sort(
+        (a, b) => a.prevalence - b.prevalence
+      );
 
-    const yearLabel = document.createElement('div');
-    yearLabel.classList.add('year-label');
-    yearLabel.textContent = year;
-    yearRow.appendChild(yearLabel);
+      const yearRow = document.createElement('div');
+      yearRow.classList.add('year-row');
 
-    sortedCorals.forEach(coral => {
-      const coralImageSmall = document.createElement('img');
-      coralImageSmall.classList.add('coral-image-small');
-      coralImageSmall.src = `./images/${coral.group.toLowerCase()}.jpg`;
-      coralImageSmall.dataset.coralGroup = coral.group;
-      coralImageSmall.dataset.region = region;
-      coralImageSmall.dataset.year = year;
-      coralImageSmall.dataset.prevalence = coral.prevalence;
+      const yearLabel = document.createElement('div');
+      yearLabel.classList.add('year-label');
+      yearLabel.textContent = year;
+      yearRow.appendChild(yearLabel);
 
-      // Add event listener to small coral image
-      coralImageSmall.addEventListener('click', (e) => {
-        const clickedCoral = e.target;
-        const coralName = clickedCoral.dataset.coralGroup;
-        const region = clickedCoral.dataset.region;
-        const year = clickedCoral.dataset.year;
-        const prevalence = clickedCoral.dataset.prevalence;
+      sortedCorals.forEach((coral) => {
+        const coralImageSmall = document.createElement('img');
+        coralImageSmall.classList.add('coral-image-small');
+        coralImageSmall.src = `./images/${coral.group.toLowerCase()}.jpg`;
+        coralImageSmall.dataset.coralGroup = coral.group;
+        coralImageSmall.dataset.region = region;
+        coralImageSmall.dataset.year = year;
+        coralImageSmall.dataset.prevalence = coral.prevalence;
 
-        modalImage.src = `./images/${coralName.toLowerCase()}.jpg`;
-        modalCoralName.textContent = coralName;
-        modalCoralDescription.textContent = coralDescriptions[coralName] || `No description available for ${coralName}`;
+        // Add event listener to small coral image
+        coralImageSmall.addEventListener('click', (e) => {
+          const clickedCoral = e.target;
+          const coralName = clickedCoral.dataset.coralGroup;
+
+          // Update before/after images dynamically
+          document.querySelector(
+            '.before-image'
+          ).style.backgroundImage = `url('./colored-coral/${coralName.toLowerCase()}.jpg')`;
+          document.querySelector(
+            '.after-image'
+          ).style.backgroundImage = `url('./images/${coralName.toLowerCase()}.jpg')`;
+
+          modalCoralName.textContent = coralName;
+          modalCoralDescription.textContent =
+            coralDescriptions[coralName] ||
+            `No description available for ${coralName}`;
+        });
+
+        yearRow.appendChild(coralImageSmall);
       });
 
-      yearRow.appendChild(coralImageSmall);
+      coralImageChart.appendChild(yearRow);
     });
+  }
 
-    coralImageChart.appendChild(yearRow);
-  });
-}
-
-modal.style.display = 'block';
+  modal.style.display = 'block'; // Display modal
 }
 
 // Function to close the modal
@@ -257,4 +352,55 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   aboutModalCloseBtn.addEventListener('click', closeAboutModal);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sliderWrapper = document.querySelector('.before-after-wrapper');
+  const handle = document.querySelector('.handle');
+  const beforeImageWrapper = document.querySelector('.before-image-wrapper');
+
+  if (!sliderWrapper || !handle || !beforeImageWrapper) return; // Ensure elements exist
+
+  let isDragging = false;
+
+  // Function to handle mouse/touch start
+  const startDragging = (e) => {
+    isDragging = true;
+    document.addEventListener('mousemove', dragHandle);
+    document.addEventListener('touchmove', dragHandle, { passive: false });
+    document.addEventListener('mouseup', stopDragging);
+    document.addEventListener('touchend', stopDragging);
+  };
+
+  // Function to handle dragging
+  const dragHandle = (e) => {
+    if (!isDragging) return;
+
+    // Determine cursor/touch position
+    const wrapperRect = sliderWrapper.getBoundingClientRect();
+    const cursorPosition = e.type.includes('mouse')
+      ? e.clientX
+      : e.touches[0].clientX;
+
+    // Calculate new handle position
+    let newLeft = cursorPosition - wrapperRect.left;
+    newLeft = Math.max(0, Math.min(wrapperRect.width, newLeft)); // Clamp within bounds
+
+    // Update handle and before image wrapper width
+    handle.style.left = `${newLeft}px`;
+    beforeImageWrapper.style.width = `${newLeft}px`;
+  };
+
+  // Function to stop dragging
+  const stopDragging = () => {
+    isDragging = false;
+    document.removeEventListener('mousemove', dragHandle);
+    document.removeEventListener('touchmove', dragHandle);
+    document.removeEventListener('mouseup', stopDragging);
+    document.removeEventListener('touchend', stopDragging);
+  };
+
+  // Attach event listeners to the handle
+  handle.addEventListener('mousedown', startDragging);
+  handle.addEventListener('touchstart', startDragging);
 });

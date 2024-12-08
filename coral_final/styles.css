@@ -424,3 +424,60 @@ a {
   display: none;
   overflow: hidden;
 }
+
+/* Handles */
+
+.before-after-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.before-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%; /* Default slider position */
+  overflow: hidden;
+  z-index: 10;
+}
+
+.before-image,
+.after-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.after-image {
+  z-index: 5;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%; /* Match default slider position */
+  width: 4px;
+  background-color: #F3F2F4; /* Slider color */
+  cursor: col-resize;
+  z-index: 20;
+}
+
+.handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #E4E6EA; /* Handle color */
+  transform: translate(-50%, -50%);
+}

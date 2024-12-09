@@ -354,6 +354,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  const smithsonianModal = document.getElementById('smithsonian-modal');
+  const smithsonianBtn = document.getElementById('smithsonian-btn');
+  const smithsonianModalCloseBtn = document.getElementById('smithsonian-modal-close-btn');
+
+  // Function to open the about modal
+  function openSmithsonianModal() {
+    smithsonianModal.style.display = 'block';
+  }
+
+  // Function to close the about modal
+  function closeSmithsonianModal() {
+    smithsonianModal.style.display = 'none';
+  }
+
+  // Add event listeners
+  smithsonianBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    openSmithsonianModal();
+  });
+
+  smithsonianModalCloseBtn.addEventListener('click', closeSmithsonianModal);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
   const sliderWrapper = document.querySelector('.before-after-wrapper');
   const handle = document.querySelector('.handle');
   const beforeImageWrapper = document.querySelector('.before-image-wrapper');

@@ -221,7 +221,7 @@ function openModal(img) {
   ).style.backgroundImage = `url('./colored-coral/${coralName}.jpg')`; // Before image (colored coral)
   document.querySelector(
     '.after-image'
-  ).style.backgroundImage = `url('./images/${coralName}.jpg')`; // After image (bleached coral)
+  ).style.backgroundImage = `url('./assets/${coralName}.jpg')`; // After image (bleached coral)
 
   
 
@@ -278,7 +278,7 @@ function openModal(img) {
       sortedCorals.slice(0, 10).forEach((coral) => {
         const coralImageSmall = document.createElement('img');
         coralImageSmall.classList.add('coral-image-small');
-        coralImageSmall.src = `./images/${coral.group.toLowerCase()}.jpg`;
+        coralImageSmall.src = `./assets/${coral.group.toLowerCase()}.jpg`;
         coralImageSmall.dataset.coralGroup = coral.group;
         coralImageSmall.dataset.region = region;
         coralImageSmall.dataset.year = year;
@@ -295,7 +295,7 @@ function openModal(img) {
           ).style.backgroundImage = `url('./colored-coral/${coralName.toLowerCase()}.jpg')`;
           document.querySelector(
             '.after-image'
-          ).style.backgroundImage = `url('./images/${coralName.toLowerCase()}.jpg')`;
+          ).style.backgroundImage = `url('./assets/${coralName.toLowerCase()}.jpg')`;
 
           modalCoralName.textContent = coralName;
           modalCoralDescription.textContent =

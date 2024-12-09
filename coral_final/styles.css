@@ -231,7 +231,7 @@ a {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 12px;
+  font-size: 16px;
   letter-spacing: 14.4px;
   position: absolute;
   top: 40px;
@@ -258,12 +258,13 @@ a {
   position: absolute;
   top: 18%;
   left: calc(6.6% + 704px + 60px);
+  font-size: 12px;
 }
 
 .modal-coral-name {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 500;
-  color: #464646;
+  color: #2C2627;
   font-size: 36px;
   margin-bottom: 20px;
   font-style: normal;
@@ -276,6 +277,7 @@ a {
   font-size: 18px;
   max-width: 500px;
   line-height: normal;
+  color: #353333;
 }
 
 .modal-region {
@@ -291,8 +293,100 @@ a {
 }
 
 .coral-image-chart {
-  margin-top: 20px;
+  margin-top: 80px;
+
 }
+.coral-image-chart .chart-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2C2627;
+  text-align: left;
+}
+
+.coral-image-chart .chart-arrow {
+  display: flex;
+  flex-direction: column; /* Stack the labels and arrow vertically */
+  align-items: center; /* Center-align everything */
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.coral-image-chart .arrow {
+  background: gray;
+  height: 2px; /* Thickness of the line */
+  width: 100%; /* Full width of the container */
+  position: relative;
+  margin-bottom: 10px; /* Add spacing between the line and the labels */
+  
+}
+
+.coral-image-chart .arrow:before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-right: 6px solid gray;
+  border-bottom: 6px solid transparent;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: 2px;
+  margin-left: 2px;
+}
+
+.coral-image-chart .arrow:after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-left: 6px solid gray;
+  border-bottom: 6px solid transparent;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-right: 2px;
+  margin-right: 2px;
+}
+
+.coral-image-chart .label {
+  font-family: "Work Sans", sans-serif;
+  font-weight: lighter;
+  font-size: 8px;
+  color: gray;
+  margin-top: 2px;
+  text-align: center;
+}
+
+
+.coral-image-chart .label.left,
+.coral-image-chart .label.right {
+  position: absolute; /* Absolute positioning for precise placement */
+  top: 0; /* Aligns the labels to the top of the chart-arrow container */
+  font-size: 10px; /* Label font size */
+  color: gray; /* Label text color */
+  
+}
+
+/* Left label */
+.coral-image-chart .label.left {
+  left: 0; /* Positions the left label at the start of the arrow */
+  transform: translateY(100%); /* Moves the label above the arrow line */
+  text-align: left; /* Aligns text to the left */
+}
+
+/* Right label */
+.coral-image-chart .label.right {
+  right: 0; /* Positions the right label at the end of the arrow */
+  transform: translateY(100%); /* Moves the label above the arrow line */
+  text-align: right; /* Aligns text to the right */
+}
+
+
+
 
 .coral-image-chart .year-row {
   display: flex;
@@ -301,10 +395,12 @@ a {
 }
 
 .coral-image-chart .year-row .year-label {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Work Sans", sans-serif;
   font-weight: 500;
-  font-size: 16px;
-  margin-right: 10px;
+  font-size: 10px;
+  margin-right: 4px;
+  transform: rotate(-90deg);
+  color: #828282;
 }
 
 .coral-image-chart .coral-image-small {

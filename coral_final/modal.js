@@ -218,7 +218,7 @@ function openModal(img) {
   // ** Set Before and After Images for Slider ** //
   document.querySelector(
     '.before-image'
-  ).style.backgroundImage = `url('./colored-coral/${coralName}.jpg')`; // Before image (colored coral)
+  ).style.backgroundImage = `url('./colored/${coralName}.jpg')`; // Before image (colored coral)
   document.querySelector(
     '.after-image'
   ).style.backgroundImage = `url('./assets/${coralName}.jpg')`; // After image (bleached coral)
@@ -292,7 +292,7 @@ function openModal(img) {
           // Update before/after images dynamically
           document.querySelector(
             '.before-image'
-          ).style.backgroundImage = `url('./colored-coral/${coralName.toLowerCase()}.jpg')`;
+          ).style.backgroundImage = `url('./colored/${coralName.toLowerCase()}.jpg')`;
           document.querySelector(
             '.after-image'
           ).style.backgroundImage = `url('./assets/${coralName.toLowerCase()}.jpg')`;

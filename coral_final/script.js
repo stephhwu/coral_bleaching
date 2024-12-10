@@ -189,24 +189,24 @@ const dataByRegion = {
       
       
       const positions = [
-        { top: "63.9%", left: "71.2%" },//fungia main hawaiian islands
-        { top: "54.9%", left: "19%" },//stylophora guam
+        { top: "63.9%", left: "76%" },//fungia main hawaiian islands
+        { top: "60%", left: "19%" },//stylophora guam
         { top: "8.6%", left: "64%" },//cyphastrea northwest hawaiian
         { top: "0%", left: "60%" },//montipora northwest hawaiian
         { top: "10.2%", left: "4.7%" }, //turbinaria  mariana
         { top: "22.5%", left: "49%" },//pocillopora northwest hawaiian
-        { top: "54.9%", left: "75.94%" },//leptoseris hawaii
-        { top: "55%", left: "56.3%" },//isopora samoa
-        { top: "64%", left: "42.7%" },//caulastrea samoa
-        { top: "89%", left: "19.5%" },//astreoporaguam
+        { top: "54.9%", left: "80%" },//leptoseris hawaii
+        { top: "65%", left: "56.3%" },//isopora samoa
+        { top: "75%", left: "42.7%" },//caulastrea samoa
+        { top: "89%", left: "15%" },//astreopora guam
         { top: "24.2%", left: "19%" },//stylophora mariana
-        { top: "36.7%", left: "93.4%" },//montipora hawaii
-        { top: "64%", left: "47.4%" },//monastraea samoa
-        { top: "81.9%", left: "71.1%" },//coeloseris samoa
-        { top: "27.8%", left: "88.5%" },//pocillopora hawaii
-        { top: "64%", left: "4.9%" },//turbinaria guam
+        { top: "36.7%", left: "88%" },//montipora hawaii
+        { top: "75%", left: "47.4%" },//monastraea samoa
+        { top: "65%", left: "51.6%" },//coeloseris samoa
+        { top: "27.8%", left: "83%" },//pocillopora hawaii
+        { top: "64%", left: "7%" },//turbinaria guam
         { top: "19.4%", left: "9.8%" }, //plesiastrea mariana
-        { top: "82.2%", left: "24.6%" },//montipora guam
+        { top: "82.2%", left: "20%" },//montipora guam
         { top: "14%", left: "53%" }, //fungia northwest mariana
       ];
 

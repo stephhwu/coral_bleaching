@@ -227,10 +227,24 @@ function openModal(img) {
   coralImageChart.innerHTML = '';
 
   // Add a chart title
-  const chartTitle = document.createElement('div');
-  chartTitle.classList.add('chart-title');
-  chartTitle.textContent = 'Additional Bleached Corals in the Region';
-  coralImageChart.appendChild(chartTitle);
+// Create container for title and subtitle
+const chartTitleContainer = document.createElement('div');
+chartTitleContainer.classList.add('chart-title-container');
+
+// Create and add title
+const chartTitle = document.createElement('div');
+chartTitle.classList.add('chart-title');
+chartTitle.textContent = 'Additional Bleached Corals in the Region';
+chartTitleContainer.appendChild(chartTitle);
+
+// Create and add subtitle
+const chartSubtitle = document.createElement('div');
+chartSubtitle.classList.add('chart-subtitle');
+chartSubtitle.textContent = 'Hover to see bleaching prevalence % and click to view more info';
+chartTitleContainer.appendChild(chartSubtitle);
+
+// Add the container to the chart
+coralImageChart.appendChild(chartTitleContainer);
 
   // Add a chart arrow with labels
   const chartArrow = document.createElement('div');
@@ -281,17 +295,47 @@ function openModal(img) {
         coralImageSmall.dataset.region = region;
         coralImageSmall.dataset.year = year;
         coralImageSmall.dataset.prevalence = coral.prevalence;
-
+      
         // Create tooltip
         const tooltip = document.createElement('div');
         tooltip.classList.add('coral-tooltip');
         tooltip.textContent = `${coral.prevalence.toFixed(1)}% (${year})`;
-
-        // Add event listener to image
+      
+        // Add mouse enter event listener
+        coralImageWrapper.addEventListener('mouseenter', () => {
+          const coralName = coral.group.toLowerCase();
+          const allCoralImages = document.querySelectorAll('.coral-image-small');
+          
+          // First, dim all images and hide all tooltips
+          allCoralImages.forEach(img => {
+            img.classList.add('dimmed');
+            img.classList.remove('highlighted');
+          });
+      
+          // Then highlight the matching corals and show their tooltips
+          let matchingCorals = Array.from(allCoralImages).filter(img => {
+            return img.querySelector('img').dataset.coralGroup.toLowerCase() === coralName;
+          });
+      
+          matchingCorals.forEach(img => {
+            img.classList.remove('dimmed');
+            img.classList.add('highlighted');
+          });
+        });
+      
+        // Add mouse leave event listener
+        coralImageWrapper.addEventListener('mouseleave', () => {
+          const allCoralImages = document.querySelectorAll('.coral-image-small');
+          allCoralImages.forEach(img => {
+            img.classList.remove('dimmed', 'highlighted');
+          });
+        });
+      
+        // Add click event listener (keeping the existing click functionality)
         coralImageSmall.addEventListener('click', (e) => {
           const clickedCoral = e.target;
           const coralName = clickedCoral.dataset.coralGroup;
-
+      
           // Update before/after images dynamically
           document.querySelector(
             '.before-image'
@@ -299,13 +343,13 @@ function openModal(img) {
           document.querySelector(
             '.after-image'
           ).style.backgroundImage = `url('./assets/${coralName.toLowerCase()}.jpg')`;
-
+      
           modalCoralName.textContent = coralName;
           modalCoralDescription.textContent =
             coralDescriptions[coralName] ||
             `No description available for ${coralName}`;
         });
-
+      
         // Append elements
         coralImageWrapper.appendChild(coralImageSmall);
         coralImageWrapper.appendChild(tooltip);

@@ -329,4 +329,67 @@ const dataByRegion = {
         });
       }
 
+      // Modify the tooltip creation part in your DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', () => {
+  const imgs = document.querySelectorAll('.img');
+  
+  imgs.forEach((img, index) => {
+    // Remove any existing tooltips first
+    const existingTooltip = img.querySelector('.tooltip');
+    if (existingTooltip) {
+      existingTooltip.remove();
+    }
+  
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('tooltip');
+    
+    // Get coral name from image source
+    const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
+    
+    // Get region from data attribute
+    const region = img.dataset.region;
+    
+    // Find matching data for this specific coral and region
+    let matchingData = null;
+    if (dataByRegion[region]) {
+      Object.keys(dataByRegion[region].data).forEach(year => {
+        const bleachingData = dataByRegion[region].data[year].bleaching;
+        const coralMatch = bleachingData.find(coral => 
+          coral.group.toLowerCase() === coralName.toLowerCase()
+        );
+        
+        if (coralMatch) {
+          // Take the most recent year's data
+          if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
+            matchingData = {
+              region: region,
+              year: year,
+              prevalence: coralMatch.prevalence,
+              group: coralMatch.group
+            };
+          }
+        }
+      });
+    }
+    
+    // Set tooltip content
+    if (matchingData) {
+      tooltip.innerHTML = `
+        <div class="tooltip-content">
+          <div class="coral-name">${matchingData.group} (${region.replace(/-/g, ' ')})</div>
+          <div class="coral-details">${matchingData.prevalence.toFixed(1)}% Bleaching (${matchingData.year})</div>
+        </div>
+      `;
+    } else {
+      tooltip.innerHTML = `
+        <div class="tooltip-content">
+          <div class="coral-name">No data available</div>
+        </div>
+      `;
+    }
+    
+    img.appendChild(tooltip);
+  });
+});
+
       

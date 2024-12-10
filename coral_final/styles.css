@@ -403,11 +403,66 @@ a {
   color: #828282;
 }
 
-.coral-image-chart .coral-image-small {
-  width: 40px;
-  height: 40px;
+/* .coral-image-chart .coral-image-small {
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   margin-right: 5px;
+} */
+
+/* Add these styles to your CSS */
+/* Combined and corrected styles for coral-image-small */
+.coral-image-small {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.coral-image-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coral-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-bottom: 5px; /* Added space between tooltip and image */
+}
+
+.coral-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.coral-image-small:hover .coral-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 .modal-coral-prevalence {
@@ -688,3 +743,4 @@ a {
 .smithsonian-close-btn:hover {
   opacity: 0.4;
 }
+

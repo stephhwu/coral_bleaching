@@ -215,40 +215,37 @@ function openModal(img) {
     coralDescriptions[matchingData.group] ||
     `No description available for ${matchingData.group}`;
 
-  // ** Set Before and After Images for Slider ** //
+  // Set Before and After Images for Slider
   document.querySelector(
     '.before-image'
-  ).style.backgroundImage = `url('./colored/${coralName}.jpg')`; // Before image (colored coral)
+  ).style.backgroundImage = `url('./colored/${coralName}.jpg')`;
   document.querySelector(
     '.after-image'
-  ).style.backgroundImage = `url('./assets/${coralName}.jpg')`; // After image (bleached coral)
-
-  
+  ).style.backgroundImage = `url('./assets/${coralName}.jpg')`;
 
   // Clear and generate coral images chart
   coralImageChart.innerHTML = '';
 
-    // Add a chart title
+  // Add a chart title
   const chartTitle = document.createElement('div');
   chartTitle.classList.add('chart-title');
-  chartTitle.textContent = 'Additional Bleached Corals Nearby';
+  chartTitle.textContent = 'Additional Bleached Corals in the Region';
   coralImageChart.appendChild(chartTitle);
 
   // Add a chart arrow with labels
   const chartArrow = document.createElement('div');
   chartArrow.classList.add('chart-arrow');
 
-
   // Create the arrow line
   const arrow = document.createElement('div');
   arrow.classList.add('arrow');
   chartArrow.appendChild(arrow);
 
-   // Create the "Less bleached" label
-   const labelLeft = document.createElement('span');
-   labelLeft.classList.add('label', 'left');
-   labelLeft.textContent = 'Less bleached';
-   chartArrow.appendChild(labelLeft);
+  // Create the "Less bleached" label
+  const labelLeft = document.createElement('span');
+  labelLeft.classList.add('label', 'left');
+  labelLeft.textContent = 'Less bleached';
+  chartArrow.appendChild(labelLeft);
 
   // Create the "Most bleached" label
   const labelRight = document.createElement('span');
@@ -258,7 +255,6 @@ function openModal(img) {
 
   // Append the chart arrow to the coralImageChart container
   coralImageChart.appendChild(chartArrow);
-
 
   if (dataByRegion[region]) {
     Object.keys(dataByRegion[region].data).forEach((year) => {
@@ -276,15 +272,22 @@ function openModal(img) {
       yearRow.appendChild(yearLabel);
 
       sortedCorals.slice(0, 10).forEach((coral) => {
+        const coralImageWrapper = document.createElement('div');
+        coralImageWrapper.classList.add('coral-image-small');
+        
         const coralImageSmall = document.createElement('img');
-        coralImageSmall.classList.add('coral-image-small');
         coralImageSmall.src = `./assets/${coral.group.toLowerCase()}.jpg`;
         coralImageSmall.dataset.coralGroup = coral.group;
         coralImageSmall.dataset.region = region;
         coralImageSmall.dataset.year = year;
         coralImageSmall.dataset.prevalence = coral.prevalence;
 
-        // Add event listener to small coral image
+        // Create tooltip
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('coral-tooltip');
+        tooltip.textContent = `${coral.prevalence.toFixed(1)}% (${year})`;
+
+        // Add event listener to image
         coralImageSmall.addEventListener('click', (e) => {
           const clickedCoral = e.target;
           const coralName = clickedCoral.dataset.coralGroup;
@@ -303,7 +306,10 @@ function openModal(img) {
             `No description available for ${coralName}`;
         });
 
-        yearRow.appendChild(coralImageSmall);
+        // Append elements
+        coralImageWrapper.appendChild(coralImageSmall);
+        coralImageWrapper.appendChild(tooltip);
+        yearRow.appendChild(coralImageWrapper);
       });
 
       coralImageChart.appendChild(yearRow);
@@ -337,6 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to open the about modal
   function openAboutModal() {
     aboutModal.style.display = 'block';
+    createAndAnimateChart(); // Call the chart creation function here
+
   }
 
   // Function to close the about modal
@@ -427,3 +435,4 @@ document.addEventListener('DOMContentLoaded', () => {
   handle.addEventListener('mousedown', startDragging);
   handle.addEventListener('touchstart', startDragging);
 });
+

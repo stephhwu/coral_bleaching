@@ -1,153 +1,154 @@
-        const margin = {top: 70, right: 150, bottom: 40, left: 60};
+const margin = {top: 200, right: 150, bottom: 70, left: 70};
         const width = 900 - margin.left - margin.right;
-        const height = 800 - margin.top - margin.bottom;
+        const height = 700 - margin.top - margin.bottom;
 
-        const svg = d3.select("#chart")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+        function createAndAnimateChart() {
 
+            // Create SVG
+            const svg = d3.select("#chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", -margin.top / 2)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#626262")
+            .attr("font-family", "Cormorant Garamond")
+            .attr("font-size", "20px")
+            .attr("font-style", "italic")
+            .attr("font-weight", 700)
+            .attr("letter-spacing", "4px")
+            .text("DAILY SEA SURFACE TEMPERATURE 60°S-60°N");
+
+        // Parse date and SST
         const parseDate = d3.timeParse("%Y-%m-%d");
+        const formatMonth = d3.timeFormat("%b");
 
-        const tooltip = d3.select("body")
-            .append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+        // Function to get decade
+        const getDecade = year => Math.floor(year / 10) * 10;
 
-        d3.csv("sea-temp.csv").then(function(rawData) {
-            const data = rawData.filter(d => {
-                const parsedDate = parseDate(d.date);
-                return parsedDate !== null && !isNaN(+d.sst);
-            }).map(d => {
-                const parsedDate = parseDate(d.date);
-                return {
-                    date: parsedDate,
-                    sst: +d.sst,
-                    year: parsedDate.getFullYear(),
-                    decade: Math.floor(parsedDate.getFullYear() / 10) * 10 + "s",
-                    status: d.status
-                };
+        svg.append("text")
+        .attr("x", 70)  // Set x to 0 to align with the left edge of the chart
+        .attr("text-anchor", "start")  // Align text to start from this point
+        .attr("y", height + margin.bottom - 10)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#626262")
+        .attr("font-family", "Work Sans")
+        .style("padding-left", "20px")
+        .attr("font-size", "10px")
+        .attr("font-weight", 400)
+        .text("Data: ERA5 1979-2023 Credit: C3S/ECMWF");
+
+        // Load and process data
+        d3.csv("sea-temp.csv").then(data => {
+            data.forEach(d => {
+                d.date = parseDate(d.date);
+                d.sst = +d.sst;
+                d.year = d.date.getFullYear();
+                d.month = d.date.getMonth();
+                d.decade = getDecade(d.year);
             });
 
-            // Get year range for x-axis
-            const yearStart = new Date(data[0].date.getFullYear(), 0, 1);
-            const yearEnd = new Date(data[0].date.getFullYear(), 11, 31);
+            // Group data by year and month
+            const groupedData = d3.group(data, d => d.year, d => d.month);
 
-            const x = d3.scaleTime()
-                .domain([yearStart, yearEnd])
-                .range([0, width]);
+            // Calculate average temperature for each month and year
+            const averagedData = Array.from(groupedData, ([year, months]) => ({
+                year: +year,
+                decade: getDecade(+year),
+                temperatures: Array.from(months, ([month, values]) => ({
+                    month: +month,
+                    avgTemp: d3.mean(values, d => d.sst)
+                }))
+            })).sort((a, b) => a.year - b.year);
 
-            const y = d3.scaleLinear()
-                .domain([19.4, 21.2])
+            // Set up scales
+            const xScale = d3.scaleBand()
+                .domain(d3.range(12))
+                .range([0, width])
+                .padding(0.1);
+
+            const yScale = d3.scaleLinear()
+                .domain([d3.min(averagedData, d => d3.min(d.temperatures, t => t.avgTemp)),
+                         d3.max(averagedData, d => d3.max(d.temperatures, t => t.avgTemp))])
                 .range([height, 0]);
 
+                const colorScale = d3.scaleOrdinal()
+                .domain([1970, 1980, 1990, 2000, 2010, 2020])
+                .range(['#E6E6E6', '#999999', '#696564', '#534E4E', '#3F3A3A', '#2C2627']);
+
+
+            // Create line generator
+            const line = d3.line()
+                .x(d => xScale(d.month) + xScale.bandwidth() / 2)
+                .y(d => yScale(d.avgTemp));
+
+            // Draw lines with animation
+            averagedData.forEach((yearData, index) => {
+                const path = svg.append("path")
+                    .datum(yearData.temperatures)
+                    .attr("fill", "none")
+                    .attr("stroke", colorScale(yearData.decade))
+                    .attr("stroke-width", 1)
+                    .attr("opacity", 0.5)
+                    .attr("d", line);
+
+                const totalLength = path.node().getTotalLength();
+
+                path.attr("stroke-dasharray", totalLength)
+                    .attr("stroke-dashoffset", totalLength)
+                    .transition()
+                    .duration(1000)
+                    .delay(index * 100)
+                    .ease(d3.easeLinear)
+                    .attr("stroke-dashoffset", 0);
+            });
+
+            // Add x-axis
             svg.append("g")
-                .attr("class", "axis")
                 .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x)
-                    .tickFormat(d3.timeFormat("%b")));
+                .call(d3.axisBottom(xScale).tickFormat(i => formatMonth(new Date(2020, i, 1))));
 
-            // Add Y axis
+            // Add y-axis
             svg.append("g")
-                .attr("class", "axis")
-                .call(d3.axisLeft(y));
+                .call(d3.axisLeft(yScale));
 
-            // Group data by decade
-            const nestedData = d3.group(data, d => d.decade);
+            // Add labels
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height + 40)
+                .style("text-anchor", "middle")
+                .text("Month");
 
-            // Color scale for decades
-            const colorScale = d3.scaleOrdinal()
-                .domain(['2020s', '2010s', '2000s', '1990s', '1980s', '1970s'])
-                .range(['#464646', '#646464', '#828282', '#A0A0A0', '#BEBEBE', '#D9D9D9']);
-
-            // Create line generator that properly handles dates across years
-   // Create line generator that properly handles dates across years
-const line = d3.line()
-.x(d => {
-    const normalizedDate = new Date(yearStart.getFullYear(), 
-                                  d.date.getMonth(), 
-                                  d.date.getDate());
-    return x(normalizedDate);
-})
-.y(d => y(d.sst))
-.defined(d => !isNaN(d.sst) && d.sst !== 0 && d.sst >= 19.4 && d.sst <= 21.2) // Add range check
-.curve(d3.curveLinear); // Use linear interpolation
-
-// Add the lines for each decade
-nestedData.forEach((values, decade) => {
-// First, sort and filter the values to ensure valid data points
-const validData = Array.from(values)
-    .sort((a, b) => a.date - b.date)
-    .filter(d => !isNaN(d.sst) && d.sst !== 0 && d.sst >= 19.4 && d.sst <= 21.2);
-
-// Create segments when there are gaps of more than 1 day
-const segments = [];
-let currentSegment = [validData[0]];
-
-for (let i = 1; i < validData.length; i++) {
-    const daysDiff = (validData[i].date - validData[i-1].date) / (1000 * 60 * 60 * 24);
-    
-    if (daysDiff > 1) {
-        if (currentSegment.length > 0) {
-            segments.push(currentSegment);
-        }
-        currentSegment = [];
-    }
-    currentSegment.push(validData[i]);
-}
-
-if (currentSegment.length > 0) {
-    segments.push(currentSegment);
-}
-
-// Draw each continuous segment
-segments.forEach(segment => {
-    if (segment && segment.length > 1) {  // Only draw if we have at least 2 points
-        svg.append("path")
-            .datum(segment)
-            .attr("fill", "none")
-            .attr("stroke", colorScale(decade))
-            .attr("stroke-width", decade === '2020s' ? 2 : 1)
-            .attr("d", line);
-    }
-});
-});
+            svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("x", -height / 2)
+                .attr("y", -40)
+                .style("text-anchor", "middle")
+                .text("Temperature (°C)");
 
             // Add legend
             const legend = svg.append("g")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", 10)
-                .attr("text-anchor", "start")
-                .selectAll("g")
-                .data(colorScale.domain().reverse())
-                .enter().append("g")
-                .attr("transform", (d, i) => `translate(${width + 10},${i * 20 + 20})`);
+                .attr("transform", `translate(${width + 20}, 0)`);
 
-            legend.append("rect")
-                .attr("x", 0)
-                .attr("width", 19)
-                .attr("height", 19)
-                .attr("fill", colorScale);
+            [1970, 1980, 1990, 2000, 2010, 2020].forEach((year, i) => {
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", i * 20)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .attr("fill", colorScale(year));
 
-            legend.append("text")
-                .attr("x", 24)
-                .attr("y", 9.5)
-                .attr("dy", "0.32em")
-                .text(d => d)
-                .style("fill", "#000");
-
-            // Add title
-            svg.append("text")
-                .attr("x", width / 2)
-                .attr("y", -margin.top / 2)
-                .attr("text-anchor", "middle")
-                .style("font-size", "16px")
-                .style("fill", "#000")
-                .style("font-family", "Cormorant Garamond")
-
-                .text("Daily Sea Surface Temperature 60°S-60°N");
-        }).catch(error => {
-            console.error("Error loading or processing data:", error);
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", i * 20 + 9)
+                    .text(year + "s")
+                    .attr("font-family", "Work Sans")
+                    .style("font-size", "12px");
+            });
         });
+    }

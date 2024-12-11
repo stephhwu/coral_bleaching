@@ -15,9 +15,8 @@ body {
 }
 
 a {
-  position: relative;
-  text-decoration: none;
-  color: #000;
+  color: inherit;
+  display: inline;
 }
 
 .nav {
@@ -162,23 +161,42 @@ a {
   opacity: 1;
 }
 
+.tooltip-container {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .tooltip {
-  position: absolute;
-  background: white;
-  border: 0.5px solid black;
+  position: fixed;
+  background: rgba(243, 243, 243, 0.7); /* Same color (#F3F3F3) but with 80% opacity */
+  /* border: 0.5px solid black; */
   padding: 10px;
-  z-index: 20;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
-  top: 100%;
-  left: 0;
+  width: 200px;
+  height: auto;
+  transform: translateY(-50%);
+  z-index: 1000;
 }
+
+.tooltip-content {
+  font-family: 'Work Sans', sans-serif;
+font-weight: 300;;
+  width: 100%;
+  font-size: 12px;
+}
+
 
 .tooltip .coral-name {
   font-family: 'Work Sans', sans-serif;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.4;
 }
 
@@ -555,6 +573,7 @@ a {
 
 
 
+
 .modal-additional-info h2 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px;
@@ -563,6 +582,15 @@ a {
   padding-left: 50px;
   margin-bottom: 40px;
   color: #2C2627;
+}
+
+.modal-additional-info p a {
+  text-decoration: none;
+  color: inherit;
+  display: inline;
+  position: static;
+  transform: none !important;
+  opacity: 1;
 }
 
 .modal-additional-info p {

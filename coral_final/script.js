@@ -1,3 +1,10 @@
+function formatRegionName(region) {
+  return region
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 const dataByRegion = {
     'main-hawaiian-islands': {
         availableYears: [2013, 2016, 2019],
@@ -328,68 +335,118 @@ const dataByRegion = {
           }
         });
       }
-
-      // Modify the tooltip creation part in your DOMContentLoaded event listener
-document.addEventListener('DOMContentLoaded', () => {
-  const imgs = document.querySelectorAll('.img');
-  
-  imgs.forEach((img, index) => {
-    // Remove any existing tooltips first
-    const existingTooltip = img.querySelector('.tooltip');
-    if (existingTooltip) {
-      existingTooltip.remove();
-    }
-  
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('tooltip');
-    
-    // Get coral name from image source
-    const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
-    
-    // Get region from data attribute
-    const region = img.dataset.region;
-    
-    // Find matching data for this specific coral and region
-    let matchingData = null;
-    if (dataByRegion[region]) {
-      Object.keys(dataByRegion[region].data).forEach(year => {
-        const bleachingData = dataByRegion[region].data[year].bleaching;
-        const coralMatch = bleachingData.find(coral => 
-          coral.group.toLowerCase() === coralName.toLowerCase()
-        );
-        
-        if (coralMatch) {
-          // Take the most recent year's data
-          if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
-            matchingData = {
-              region: region,
-              year: year,
-              prevalence: coralMatch.prevalence,
-              group: coralMatch.group
-            };
-          }
-        }
-      });
-    }
-    
-    // Set tooltip content
-    if (matchingData) {
-      tooltip.innerHTML = `
-        <div class="tooltip-content">
-          <div class="coral-name">${matchingData.group} (${region.replace(/-/g, ' ')})</div>
-          <div class="coral-details">${matchingData.prevalence.toFixed(1)}% Bleaching (${matchingData.year})</div>
-        </div>
-      `;
-    } else {
-      tooltip.innerHTML = `
-        <div class="tooltip-content">
-          <div class="coral-name">No data available</div>
-        </div>
-      `;
-    }
-    
-    img.appendChild(tooltip);
-  });
-});
-
       
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Remove any existing tooltip containers
+        const existingTooltips = document.querySelectorAll('.tooltip-container');
+        existingTooltips.forEach(tooltip => tooltip.remove());
+      
+        // Create a single container for all tooltips
+        const tooltipContainer = document.createElement('div');
+        tooltipContainer.classList.add('tooltip-container');
+        document.body.appendChild(tooltipContainer);
+      
+        const imgs = document.querySelectorAll('.img');
+        
+        // Create a map to store tooltips for each coral type
+        const tooltipMap = new Map();
+        
+        imgs.forEach((img, index) => {
+          const coralName = img.querySelector('img').src.split('/').pop().split('.')[0];
+          const region = img.dataset.region;
+          
+          // If we haven't created tooltips for this coral type yet, create them
+          if (!tooltipMap.has(coralName)) {
+            tooltipMap.set(coralName, []);
+          }
+          
+          // Create tooltip for this specific instance
+          const tooltip = document.createElement('div');
+          tooltip.classList.add('tooltip');
+          
+          // Find matching data
+          let matchingData = null;
+          if (dataByRegion[region]) {
+            Object.keys(dataByRegion[region].data).forEach(year => {
+              const bleachingData = dataByRegion[region].data[year].bleaching;
+              const coralMatch = bleachingData.find(coral => 
+                coral.group.toLowerCase() === coralName.toLowerCase()
+              );
+              
+              if (coralMatch) {
+                if (!matchingData || parseInt(year) > parseInt(matchingData.year)) {
+                  matchingData = {
+                    region: region,
+                    year: year,
+                    prevalence: coralMatch.prevalence,
+                    group: coralMatch.group
+                  };
+                }
+              }
+            });
+          }
+          
+          // Set tooltip content
+          if (matchingData) {
+            tooltip.innerHTML = `
+              <div class="tooltip-content">
+                <div class="coral-name">${matchingData.group}</div>
+                <div class="region-name">${formatRegionName(region)}</div>
+                <div class="coral-details">${matchingData.prevalence.toFixed(1)}% Bleaching (${matchingData.year})</div>
+              </div>
+            `;
+          } else {
+            tooltip.innerHTML = `
+              <div class="tooltip-content">
+                <div class="coral-name">No data available</div>
+              </div>
+            `;
+          }
+      
+          tooltipContainer.appendChild(tooltip);
+          tooltipMap.get(coralName).push({ element: tooltip, img: img });
+      
+          // Add mouse events
+          img.addEventListener('mouseenter', (e) => {
+            if (!img.classList.contains('hover-enabled')) return;
+            
+            // Add black outline to hovered image
+            img.style.outline = '2px solid black';
+            
+            // Dim all images first
+            imgs.forEach(otherImg => {
+              otherImg.style.opacity = '0.1';
+            });
+            
+            // Show tooltips and highlight for all similar corals
+            const similarCorals = tooltipMap.get(coralName);
+            similarCorals.forEach(({ element: tooltipElement, img: similarImg }) => {
+              const rect = similarImg.getBoundingClientRect();
+              tooltipElement.style.opacity = '1';
+              tooltipElement.style.left = `${rect.right + 10}px`;
+              tooltipElement.style.top = `${rect.top + (rect.height / 2)}px`;
+              
+              // Highlight similar coral
+              similarImg.style.outline = '2px solid black';
+              similarImg.style.opacity = '1';
+            });
+          });
+      
+          img.addEventListener('mouseleave', () => {
+            if (!img.classList.contains('hover-enabled')) return;
+            
+            // Hide all tooltips for this coral type
+            tooltipMap.get(coralName).forEach(({ element: tooltipElement, img: similarImg }) => {
+              tooltipElement.style.opacity = '0';
+              similarImg.style.outline = 'none';
+            });
+            
+            // Restore opacity for all images
+            imgs.forEach(otherImg => {
+              otherImg.style.opacity = '1';
+              otherImg.style.outline = 'none';
+            });
+          });
+        });
+      });

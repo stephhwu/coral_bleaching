@@ -3,6 +3,8 @@ const margin = {top: 200, right: 150, bottom: 70, left: 70};
         const height = 700 - margin.top - margin.bottom;
 
         function createAndAnimateChart() {
+            d3.select("#chart svg").remove();
+
 
             // Create SVG
             const svg = d3.select("#chart")
@@ -67,34 +69,36 @@ const margin = {top: 200, right: 150, bottom: 70, left: 70};
             })).sort((a, b) => a.year - b.year);
 
             // Set up scales
-            const xScale = d3.scaleBand()
-                .domain(d3.range(12))
-                .range([0, width])
-                .padding(0.1);
+            const xScale = d3.scaleLinear()  // Change to scaleLinear instead of scaleBand
+            .domain([0, 11])  // Set domain from 0 to 11 (12 months)
+            .range([0, width]);  // Full width
 
             const yScale = d3.scaleLinear()
                 .domain([d3.min(averagedData, d => d3.min(d.temperatures, t => t.avgTemp)),
                          d3.max(averagedData, d => d3.max(d.temperatures, t => t.avgTemp))])
                 .range([height, 0]);
-
-                const colorScale = d3.scaleOrdinal()
-                .domain([1970, 1980, 1990, 2000, 2010, 2020])
-                .range(['#E6E6E6', '#999999', '#696564', '#534E4E', '#3F3A3A', '#2C2627']);
-
-
+                const decadeColors = {
+                    1970: '#E6E6E6',   // Lightest gray
+                    1980: '#CCCCCC',   // Very light gray
+                    1990: '#B8B8B8',   // Light gray
+                    2000: '#A3A3A3',   // Light-medium gray
+                    2010: '#8A8A8A',   // Medium gray
+                    2020: '#333333'    // Dark gray
+                };
             // Create line generator
             const line = d3.line()
-                .x(d => xScale(d.month) + xScale.bandwidth() / 2)
-                .y(d => yScale(d.avgTemp));
+            .x(d => xScale(d.month))  // Remove the bandwidth adjustment
+            .y(d => yScale(d.avgTemp));
 
             // Draw lines with animation
             averagedData.forEach((yearData, index) => {
+                console.log('Year:', yearData.year, 'Decade:', yearData.decade, 'Color:', decadeColors[yearData.decade]);
                 const path = svg.append("path")
                     .datum(yearData.temperatures)
                     .attr("fill", "none")
-                    .attr("stroke", colorScale(yearData.decade))
+                    .attr("stroke", decadeColors[yearData.decade])
                     .attr("stroke-width", 1)
-                    .attr("opacity", 0.5)
+                    .attr("opacity", 1)
                     .attr("d", line);
 
                 const totalLength = path.node().getTotalLength();
@@ -110,8 +114,11 @@ const margin = {top: 200, right: 150, bottom: 70, left: 70};
 
             // Add x-axis
             svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(xScale).tickFormat(i => formatMonth(new Date(2020, i, 1))));
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale)
+                .ticks(12)  // Force 12 ticks
+                .tickFormat(i => formatMonth(new Date(2020, i, 1)))  // Keep month formatting
+            );
 
             // Add y-axis
             svg.append("g")
@@ -133,22 +140,22 @@ const margin = {top: 200, right: 150, bottom: 70, left: 70};
 
             // Add legend
             const legend = svg.append("g")
-                .attr("transform", `translate(${width + 20}, 0)`);
-
-            [1970, 1980, 1990, 2000, 2010, 2020].forEach((year, i) => {
-                legend.append("rect")
-                    .attr("x", 0)
-                    .attr("y", i * 20)
-                    .attr("width", 10)
-                    .attr("height", 10)
-                    .attr("fill", colorScale(year));
-
-                legend.append("text")
-                    .attr("x", 20)
-                    .attr("y", i * 20 + 9)
-                    .text(year + "s")
-                    .attr("font-family", "Work Sans")
-                    .style("font-size", "12px");
-            });
+            .attr("transform", `translate(${width + 20}, 0)`);
+        
+        Object.keys(decadeColors).forEach((decade, i) => {
+            legend.append("rect")
+                .attr("x", 0)
+                .attr("y", i * 20)
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("fill", decadeColors[decade]);
+        
+            legend.append("text")
+                .attr("x", 20)
+                .attr("y", i * 20 + 9)
+                .text(decade + "s")
+                .attr("font-family", "Work Sans")
+                .style("font-size", "12px");
+        });
         });
     }

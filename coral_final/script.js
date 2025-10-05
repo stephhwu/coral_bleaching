@@ -225,8 +225,12 @@ const dataByRegion = {
         transform: "translate(-50%, -50%) scale(0)",
       });
 
-      gsap.from("p", {
-        y: 150,
+      gsap.fromTo(".header p", {
+        y: 100,
+        opacity: 0,
+      }, {
+        y: 0,
+        opacity: 1,
         ease: "power4.inOut",
         duration: 1,
         stagger: {

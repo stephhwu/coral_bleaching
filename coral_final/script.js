@@ -288,6 +288,13 @@ const dataByRegion = {
           duration: 0.75,
           ease: "power2.out",
           onComplete: () => {
+            // Brighten background image
+            gsap.to(".background-image", {
+              opacity: 1,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+            
             // Fade in overlay text
             gsap.to(".overlay-text .main-title", {
               opacity: 1,

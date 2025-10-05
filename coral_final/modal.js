@@ -267,6 +267,14 @@ coralImageChart.appendChild(chartTitleContainer);
   }
 
   modal.style.display = 'block'; // Display modal
+  
+  // Reset slider position when modal opens
+  const handle = document.querySelector('.handle');
+  const beforeImageWrapper = document.querySelector('.before-image-wrapper');
+  if (handle && beforeImageWrapper) {
+    handle.style.left = '50%';
+    beforeImageWrapper.style.width = '50%';
+  }
 }
 
 // Function to close the modal
@@ -344,6 +352,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isDragging = false;
 
+  // Initialize slider position
+  const initializeSlider = () => {
+    handle.style.left = '50%';
+    beforeImageWrapper.style.width = '50%';
+  };
+
+  // Initialize on load
+  initializeSlider();
+
   // Function to handle mouse/touch start
   const startDragging = (e) => {
     isDragging = true;
@@ -357,6 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const dragHandle = (e) => {
     if (!isDragging) return;
 
+    // Prevent default behavior for touch events
+    if (e.type.includes('touch')) {
+      e.preventDefault();
+    }
+
     // Determine cursor/touch position
     const wrapperRect = sliderWrapper.getBoundingClientRect();
     const cursorPosition = e.type.includes('mouse')
@@ -367,9 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let newLeft = cursorPosition - wrapperRect.left;
     newLeft = Math.max(0, Math.min(wrapperRect.width, newLeft)); // Clamp within bounds
 
-    // Update handle and before image wrapper width
-    handle.style.left = `${newLeft}px`;
-    beforeImageWrapper.style.width = `${newLeft}px`;
+    // Calculate percentage for more accurate positioning
+    const percentage = (newLeft / wrapperRect.width) * 100;
+
+    // Update handle and before image wrapper
+    handle.style.left = `${percentage}%`;
+    beforeImageWrapper.style.width = `${percentage}%`;
   };
 
   // Function to stop dragging
